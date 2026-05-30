@@ -5,52 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visya OS | Master Dashboard</title>
     <style>
-        :root { --sys-bg: rgba(20, 20, 25, 0.7); --sys-border: rgba(255, 255, 255, 0.15); --sys-blur: blur(30px); --accent: #0a84ff; --text-main: #ffffff; --text-muted: rgba(255, 255, 255, 0.6); }
+        /* === БАЗОВЫЙ СТИЛЬ === */
+        :root {
+            --sys-bg: rgba(20, 20, 25, 0.7);
+            --sys-border: rgba(255, 255, 255, 0.15);
+            --sys-blur: blur(30px);
+            --accent: #0a84ff;
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; user-select: none; }
+        
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         body { margin: 0; padding: 0; height: 100vh; overflow: hidden; color: var(--text-main); background: linear-gradient(-45deg, #09131a, #162a35, #1e3a47, #0b141d); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
-        
+
         .top-menu { position: fixed; top: 0; left: 0; width: 100%; height: 30px; background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 13px; font-weight: 500; z-index: 10000; border-bottom: 1px solid rgba(255,255,255,0.1); display: none; }
-        .dashboard-container { display: none; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); grid-auto-rows: min-content; gap: 20px; padding: 50px 20px 20px 20px; height: 100vh; overflow-y: auto; overflow-x: hidden; }
-        .panel { background: var(--sys-bg); backdrop-filter: var(--sys-blur); -webkit-backdrop-filter: var(--sys-blur); border: 1px solid var(--sys-border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; animation: fadeInPanel 0.5s ease forwards; opacity: 0; transform: translateY(15px); }
+        .top-menu-left { display: flex; align-items: center; gap: 20px; }
+        .top-menu-left b { font-weight: 800; display: flex; align-items: center; gap: 5px; color: #fff; }
+        .top-menu-right { display: flex; align-items: center; gap: 15px; }
+
+        /* === GRID DASHBOARD === */
+        .dashboard-container {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-auto-rows: min-content;
+            gap: 20px;
+            padding: 50px 20px 20px 20px; height: 100vh; overflow-y: auto; overflow-x: hidden;
+        }
+
+        .panel {
+            background: var(--sys-bg); backdrop-filter: var(--sys-blur); -webkit-backdrop-filter: var(--sys-blur);
+            border: 1px solid var(--sys-border); border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; overflow: hidden;
+            animation: fadeInPanel 0.5s ease forwards; opacity: 0; transform: translateY(15px);
+        }
         @keyframes fadeInPanel { to { opacity: 1; transform: translateY(0); } }
-        .panel-large { grid-column: span 2; } .panel-full { grid-column: 1 / -1; }
-        @media (max-width: 768px) { .panel-large { grid-column: span 1; } }
-        .panel-title { font-size: 15px; font-weight: 700; color: #fff; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.3); }
-        .content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         
-        input, select { width: 100%; padding: 10px 14px; margin-bottom: 8px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; font-size: 14px; outline: none; transition: 0.2s; }
+        .panel-large { grid-column: span 2; }
+        .panel-full { grid-column: 1 / -1; }
+        @media (max-width: 768px) { .panel-large { grid-column: span 1; } }
+
+        .panel-title { font-size: 15px; font-weight: 700; color: #fff; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.3); letter-spacing: 0.5px; }
+        .content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+        /* === ЭЛЕМЕНТЫ УПРАВЛЕНИЯ === */
+        input, select {
+            width: 100%; padding: 10px 14px; margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px; color: white; font-size: 14px; outline: none; transition: 0.2s;
+        }
         input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(10,132,255,0.3); background: rgba(0,0,0,0.6); }
-        .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        select {
+            appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+        }
+        select option { background: #1e1e1e; color: white; }
+
+        .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         .btn:hover { background: #0066cc; transform: translateY(-2px); } .btn:active { transform: scale(0.96); }
         .btn-danger { background: #ff453a; } .btn-danger:hover { background: #d32f2f; }
         .btn-glass { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); box-shadow: none; } .btn-glass:hover { background: rgba(255,255,255,0.2); }
-        
+
         .card { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        
+        .list-item:last-child { border-bottom: none; padding-bottom: 0; }
+
         #login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 99999; transition: opacity 0.5s ease; background: rgba(0,0,0,0.6); }
         .login-avatar { width: 130px; height: 130px; border-radius: 50%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.2); }
         .login-input-wrap { position: relative; width: 260px; margin-bottom: 10px; }
         .login-input-wrap input { padding-right: 40px; border-radius: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.3); text-align: center; font-size: 16px; }
         .login-btn { position: absolute; right: 5px; top: 5px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; transition: 0.2s; font-size: 18px; }
-        
+        .login-btn:hover { background: rgba(255,255,255,0.5); }
+
         .heydog-wrapper { position: relative; display: inline-block; cursor: crosshair; }
         .heydog-wrapper img { width: 140px; transition: 0.1s; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); border-radius: 15px; }
         .heydog-wrapper:active img { transform: scale(0.90); filter: brightness(0.5) sepia(1) hue-rotate(-50deg) saturate(5); }
         @keyframes stickIn { 0% { transform: scale(3) rotate(-45deg); opacity: 0; } 100% { transform: scale(1) rotate(var(--rot)); opacity: 1; } }
         @keyframes fadeOutHit { to { opacity: 0; transform: scale(0.5); } }
         .sword-hit { position: absolute; font-size: 50px; pointer-events: none; animation: stickIn 0.1s ease-out forwards, fadeOutHit 1s ease-in 1s forwards; text-shadow: 0 5px 15px rgba(0,0,0,0.8); z-index: 10; }
-        
+
         .admin-nav { display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .admin-tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: #ddd; background: rgba(0,0,0,0.3); transition: 0.2s; border: 1px solid rgba(255,255,255,0.05); }
         .admin-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
         .admin-panel-section { display: none; } .admin-panel-section.active { display: block; }
-        
+
         #notif-container { position: fixed; top: 40px; right: 20px; z-index: 100000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .mac-toast { background: rgba(30, 30, 35, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; gap: 15px; align-items: center; animation: slideInRight 0.4s forwards, fadeOut 0.5s 4s forwards; }
         @keyframes slideInRight { from { transform: translateX(120%); } to { transform: translateX(0); } } @keyframes fadeOut { to { opacity: 0; } }
-        
+
         /* ПРАНКИ ХАРДКОР */
         @keyframes hardcoreShake { 0% { transform: translate(0,0) rotate(0); filter: hue-rotate(0deg); } 20% { transform: translate(-30px, 30px) rotate(-5deg); filter: hue-rotate(90deg); } 40% { transform: translate(30px, -20px) rotate(5deg); } 60% { transform: translate(-40px, -40px) rotate(-10deg); } 80% { transform: translate(40px, 30px) rotate(10deg); } 100% { transform: translate(0,0) rotate(0); filter: hue-rotate(360deg); } }
         .shake-hardcore { animation: hardcoreShake 0.1s infinite; }
@@ -150,7 +195,21 @@
 
                 <div id="admin-sec-logs" class="admin-panel-section"><div class="card" style="background: rgba(0,0,0,0.6); font-family: monospace; font-size: 14px; line-height: 1.6; max-height: 400px; overflow-y: auto; color: #32d74b;" id="global-logs-container">Загрузка логов...<br></div></div>
 
-                <div id="admin-sec-pranks" class="admin-panel-section"><div class="card" style="border: 2px solid rgba(255,69,58,0.5); background: rgba(255,69,58,0.1);"><select id="prank-user-select" style="background: rgba(0,0,0,0.7); font-size: 16px; font-weight: bold;"></select><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;"><button class="btn btn-glass" onclick="prank('scare')">💀 СКРИМЕР (ШОК)</button><button class="btn btn-glass" onclick="prank('shake')">ЖЕСТКАЯ Тряска</button><button class="btn btn-glass" onclick="prank('spam')">Вирусный Спам</button><button class="btn btn-glass" onclick="prank('delete')">Удалить OS (Terminal)</button><button class="btn btn-danger" style="grid-column: 1 / -1; font-size: 18px; padding: 15px;" onclick="prank('bsod')">КРИТИЧЕСКИЙ КРАШ (BSOD)</button><button class="btn btn-danger" style="grid-column: 1 / -1; font-size: 16px; padding: 10px; background: darkred;" onclick="hardResetDB()">⚠️ ОБНУЛИТЬ ВСЮ БАЗУ ДАННЫХ ⚠️</button></div></div></div>
+                <!-- ПАНЕЛЬ ПРАНКОВ ПО СЕТИ -->
+                <div id="admin-sec-pranks" class="admin-panel-section">
+                    <div class="card" style="border: 2px solid rgba(255,69,58,0.5); background: rgba(255,69,58,0.1);">
+                        <p style="color: #ff453a; font-weight: bold; margin-top: 0;">ВНИМАНИЕ: Эффект сработает прямо на компьютере выбранной жертвы через пару секунд!</p>
+                        <select id="prank-user-select" style="background: rgba(0,0,0,0.7); font-size: 16px; font-weight: bold;"></select>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+                            <button class="btn btn-glass" onclick="sendPrank('scare')">💀 СКРИМЕР (ШОК)</button>
+                            <button class="btn btn-glass" onclick="sendPrank('shake')">ЖЕСТКАЯ Тряска</button>
+                            <button class="btn btn-glass" onclick="sendPrank('spam')">Вирусный Спам</button>
+                            <button class="btn btn-glass" onclick="sendPrank('delete')">Удалить OS (Terminal)</button>
+                            <button class="btn btn-danger" style="grid-column: 1 / -1; font-size: 18px; padding: 15px;" onclick="sendPrank('bsod')">КРИТИЧЕСКИЙ КРАШ (BSOD)</button>
+                        </div>
+                        <button class="btn btn-danger" style="width: 100%; margin-top: 15px; font-size: 16px; padding: 10px; background: darkred;" onclick="hardResetDB()">⚠️ ОБНУЛИТЬ ВСЮ БАЗУ ДАННЫХ ⚠️</button>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -184,47 +243,53 @@
         } catch (e) {
             document.getElementById('login-status').innerText = "Ошибка сервера! Запустите локально. 🔴";
             document.getElementById('login-status').style.color = "#ff453a";
-            // Заглушка, если Vercel не настроен
-            database = { "Maxutko201": { password: "28042010", role: "admin", id: "0001", vk: 0, ar: 0, items: ["GOD MODE"], fines: [], heydogHits: 0, serverLogs: ["[Система] База данных успешно инициализирована!"] } };
+            // Заглушка
+            database = { "Maxutko201": { password: "28042010", role: "admin", id: "0001", vk: 0, ar: 0, items: ["GOD MODE"], fines: [], heydogHits: 0, pendingPranks: [], serverLogs: ["[Система] База данных инициализирована!"] } };
         }
     }
     initServer();
 
-    // === СИСТЕМА REAL-TIME ОБНОВЛЕНИЯ ДАННЫХ ===
+    // === СИСТЕМА УСКОРЕННОЙ СИНХРОНИЗАЦИИ (КАЖДЫЕ 2 СЕКУНДЫ) ===
     let syncTimeout;
     let isSaving = false;
 
-    // Функция сохранения на сервер
     function syncDB() {
         isSaving = true;
         clearTimeout(syncTimeout);
         syncTimeout = setTimeout(async () => {
-            try {
-                await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(database) });
-            } catch(e) {}
-            setTimeout(() => { isSaving = false; }, 500);
-        }, 1000);
+            try { await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(database) }); } catch(e) {}
+            setTimeout(() => { isSaving = false; }, 300);
+        }, 500);
     }
 
-    // Фоновая загрузка новых данных с сервера каждые 5 секунд
+    // БЫСТРЫЙ ПИНГ СЕРВЕРА (Каждые 2 секунды)
     setInterval(async () => {
-        if (!currentUser || isSaving) return; // Не обновляем, если игрок сам сейчас тыкает кнопки
+        if (!currentUser || isSaving) return;
         try {
             const res = await fetch('/api/get');
             const serverDb = await res.json();
             
-            // Если кто-то другой изменил базу (выписал штраф, перевел деньги)
+            // ПРОВЕРКА НА ПРАНКИ ПО СЕТИ!
+            if (serverDb[currentUser] && serverDb[currentUser].pendingPranks && serverDb[currentUser].pendingPranks.length > 0) {
+                serverDb[currentUser].pendingPranks.forEach(p => executePrankLocally(p));
+                serverDb[currentUser].pendingPranks = [];
+                database = serverDb;
+                syncDB(); // Очищаем список пранков на сервере, чтобы не повторялось
+            }
+
+            // Обновление интерфейса, если кто-то перевел деньги или выписал штраф
             if (JSON.stringify(database) !== JSON.stringify(serverDb)) {
                 database = serverDb;
-                initAllPanels(); // Бесшовно обновляем экран игрока
+                initAllPanels(); 
                 
-                // Мигаем значком 🔄
                 const syncIcon = document.getElementById("sync-status");
-                syncIcon.innerText = "🔄"; syncIcon.style.color = "#32d74b";
-                setTimeout(() => { syncIcon.innerText = "📶"; syncIcon.style.color = "white"; }, 1500);
+                if(syncIcon) {
+                    syncIcon.innerText = "🔄"; syncIcon.style.color = "#32d74b";
+                    setTimeout(() => { syncIcon.innerText = "📶"; syncIcon.style.color = "white"; }, 1000);
+                }
             }
         } catch (e) {}
-    }, 5000);
+    }, 2000); // <-- ТЕПЕРЬ 2 СЕКУНДЫ
 
     // УТИЛИТЫ И ЛОГИ
     function notifyMac(title, message, type="info") {
@@ -240,8 +305,7 @@
         const time = new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
         if(!database["Maxutko201"].serverLogs) database["Maxutko201"].serverLogs = [];
         database["Maxutko201"].serverLogs.unshift(`[${time}] ${text}`);
-        if(database["Maxutko201"].serverLogs.length > 200) database["Maxutko201"].serverLogs.pop(); // Ограничиваем историю
-        
+        if(database["Maxutko201"].serverLogs.length > 200) database["Maxutko201"].serverLogs.pop();
         const logCont = document.getElementById('global-logs-container');
         if(logCont) logCont.innerHTML = database["Maxutko201"].serverLogs.join('<br>') + '<br><br>[Система] Сервер запущен...';
         syncDB();
@@ -307,14 +371,16 @@
     function renderFinesApp() {
         const l = document.getElementById('fines-list-app'); const f = database[currentUser].fines; l.innerHTML = "";
         if(f.length === 0) return l.innerHTML = `<div style="text-align:center; color:gray; margin-top:20px;">У вас нет штрафов.</div>`;
-        f.forEach(x => { l.innerHTML += `<div class="card" style="border: 1px solid #ff453a; background: rgba(255,69,58,0.1);"><div style="font-weight: 800; font-size: 18px;">${x.reason}</div><div style="color:#ff453a; margin: 8px 0 15px 0; font-weight:800;">Сумма: ${x.amount} VK</div><button class="btn btn-danger" style="width:100%;" onclick="payFine(${x.id})">Оплатить сейчас</button></div>`; });
+        f.forEach(x => { l.innerHTML += `<div class="card" style="border: 1px solid #ff453a; background: rgba(255,69,58,0.1);"><div style="font-weight: 800; font-size: 18px;">${x.reason}</div><div style="color:#ff453a; margin: 8px 0 15px 0; font-weight:800;">Сумма: ${x.amount} VK</div><button class="btn btn-danger" style="width:100%;" onclick="payFine('${x.id}')">Оплатить сейчас</button></div>`; });
     }
 
+    // ИСПРАВЛЕННЫЙ БАГ: id теперь передается как строка, чтобы не потерялось при автообновлении
     function payFine(id) {
-        const u = database[currentUser]; const idx = u.fines.findIndex(x => x.id === id); if(idx === -1) return;
+        const u = database[currentUser]; const idx = u.fines.findIndex(x => String(x.id) === String(id)); 
+        if(idx === -1) return notifyMac("Ошибка", "Штраф не найден.", "error");
         if (u.vk >= u.fines[idx].amount) {
             u.vk -= u.fines[idx].amount; u.fines.splice(idx, 1);
-            addLog(`⚖️ ${currentUser} оплатил штраф на сумму ${u.fines[idx].amount} VK.`); notifyMac("Мэрия", "Штраф оплачен."); syncDB(); initAllPanels();
+            addLog(`⚖️ ${currentUser} оплатил штраф.`); notifyMac("Мэрия", "Штраф оплачен."); syncDB(); initAllPanels();
         } else notifyMac("Внимание", "Недостаточно средств!", "error");
     }
 
@@ -362,14 +428,16 @@
         const n = document.getElementById("new-user-name").value; const p = document.getElementById("new-user-pass").value; const i = document.getElementById("new-user-id").value;
         if (!n || !p || database[n]) return notifyMac("Ошибка", "Заполните данные корректно.", "error");
         const id = i ? i : Math.floor(1000 + Math.random() * 9000).toString();
-        database[n] = { password: p, role: "player", id: id, vk: 0, ar: 0, items: ["Паспорт"], fines: [], heydogHits: 0 };
+        database[n] = { password: p, role: "player", id: id, vk: 0, ar: 0, items: ["Паспорт"], fines: [], heydogHits: 0, pendingPranks: [] };
         addLog(`🟢 Зарегистрирован житель: ${n} (ID: ${id}, 0 VK)`); notifyMac("Регистрация", `Житель ${n} создан.`); document.getElementById("new-user-name").value = ""; document.getElementById("new-user-pass").value = ""; document.getElementById("new-user-id").value = ""; syncDB(); updateAdminSelects(); initAllPanels();
     }
 
     function issueFine() {
         const u = document.getElementById("fine-user-select").value; const r = document.getElementById("fine-reason").value; const a = parseInt(document.getElementById("fine-amount").value);
         if(!u || !r || !a) return notifyMac("Ошибка", "Заполните все данные.", "error");
-        database[u].fines.push({ id: Date.now(), reason: r, amount: a }); addLog(`🚨 Штраф игроку ${u} на ${a} VK (${r}).`); notifyMac("Приставы", `Штраф выписан ${u}.`); syncDB(); if(u === currentUser) initAllPanels();
+        // Сохраняем id как СТРОКУ, чтобы браузер не сломал цифры
+        database[u].fines.push({ id: Date.now().toString(), reason: r, amount: a }); 
+        addLog(`🚨 Штраф игроку ${u} на ${a} VK (${r}).`); notifyMac("Приставы", `Штраф выписан ${u}.`); syncDB(); if(u === currentUser) initAllPanels();
     }
 
     function loadUserInAdmin() {
@@ -386,11 +454,18 @@
         addLog(`⚙️ Обновлен профиль игрока ${u}.`); notifyMac("База данных", `Профиль ${u} сохранен.`); syncDB(); initAllPanels(); 
     }
 
-    // ХАРДКОР ПРАНКИ
-    function prank(type) {
-        const t = document.getElementById("prank-user-select").value; if(!t) return notifyMac("Пранки", "Выберите жертву!", "error"); notifyMac("ХАРДКОР ПРАНК", `Активирован`);
+    // === ПРАНКИ ПО СЕТИ ===
+    function sendPrank(type) {
+        const target = document.getElementById("prank-user-select").value; if(!target) return notifyMac("Пранки", "Выберите жертву!", "error"); 
+        if(!database[target].pendingPranks) database[target].pendingPranks = [];
+        database[target].pendingPranks.push(type);
+        syncDB();
+        notifyMac("ХАРДКОР ПРАНК", `Команда отправлена игроку ${target}.`);
+    }
+
+    function executePrankLocally(type) {
         if(type === 'scare') {
-            const sc = document.createElement('div'); sc.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;background:black;color:red;display:flex;justify-content:center;align-items:center;font-size:130px;font-weight:900;text-align:center;font-family:serif;'; sc.innerHTML = 'ОБЕРНИСЬ.'; document.body.appendChild(sc);
+            const sc = document.createElement('div'); sc.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;background:black;color:red;display:flex;justify-content:center;align-items:center;font-size:150px;font-weight:900;text-align:center;font-family:serif;'; sc.innerHTML = 'ОБЕРНИСЬ.'; document.body.appendChild(sc);
             let iv = setInterval(() => { sc.style.background = sc.style.background === 'black' ? 'red' : 'black'; sc.style.color = sc.style.background === 'black' ? 'red' : 'black'; }, 30);
             new Audio('https://www.myinstants.com/media/sounds/fnaf-scream.mp3').play(); document.body.classList.add("shake-hardcore"); setTimeout(() => { clearInterval(iv); sc.remove(); document.body.classList.remove("shake-hardcore"); }, 3000);
         }
@@ -402,7 +477,7 @@
 
     function hardResetDB() {
         if(confirm("Вы уверены, что хотите ОБНУЛИТЬ ВСЮ БАЗУ? Это действие нельзя отменить!")) {
-            database = { "Maxutko201": { password: "28042010", role: "admin", id: "0001", vk: 0, ar: 0, items: ["GOD MODE"], fines: [], heydogHits: 0, serverLogs: ["[Система] База сброшена администратором."] } };
+            database = { "Maxutko201": { password: "28042010", role: "admin", id: "0001", vk: 0, ar: 0, items: ["GOD MODE"], fines: [], heydogHits: 0, pendingPranks: [], serverLogs: ["[Система] База сброшена администратором."] } };
             syncDB(); alert("БАЗА СБРОШЕНА. Выполните перезаход."); logout();
         }
     }
