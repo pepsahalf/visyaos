@@ -5,259 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visya OS | Master Dashboard</title>
     <style>
-        /* === БАЗОВЫЙ СТИЛЬ MACOS / GLASSMORPHISM === */
-        :root {
-            --sys-bg: rgba(20, 20, 25, 0.7);
-            --sys-border: rgba(255, 255, 255, 0.15);
-            --sys-blur: blur(30px);
-            --accent: #0a84ff;
-            --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.6);
-        }
-
+        :root { --sys-bg: rgba(20, 20, 25, 0.7); --sys-border: rgba(255, 255, 255, 0.15); --sys-blur: blur(30px); --accent: #0a84ff; --text-main: #ffffff; --text-muted: rgba(255, 255, 255, 0.6); }
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; user-select: none; }
-        
-        /* ДИНАМИЧЕСКИЙ ФОН */
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        body {
-            margin: 0; padding: 0; height: 100vh; overflow: hidden; color: var(--text-main);
-            background: linear-gradient(-45deg, #09131a, #162a35, #1e3a47, #0b141d);
-            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
-        }
-
-        /* ВЕРХНЕЕ МЕНЮ MACOS */
-        .top-menu {
-            position: fixed; top: 0; left: 0; width: 100%; height: 30px;
-            background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
-            font-size: 13px; font-weight: 500; z-index: 10000; border-bottom: 1px solid rgba(255,255,255,0.1); display: none;
-        }
-        .top-menu-left { display: flex; align-items: center; gap: 20px; }
-        .top-menu-left b { font-weight: 800; display: flex; align-items: center; gap: 5px; color: #fff; }
-        .top-menu-right { display: flex; align-items: center; gap: 15px; }
-
-        /* === РОВНАЯ И КОМПАКТНАЯ СЕТКА (GRID DASHBOARD) === */
-        .dashboard-container {
-            display: none; /* Покажется после логина */
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            grid-auto-rows: min-content;
-            gap: 20px;
-            padding: 50px 20px 20px 20px; height: 100vh; overflow-y: auto; overflow-x: hidden;
-        }
-
-        /* ВИДЖЕТЫ (ПАНЕЛИ) */
-        .panel {
-            background: var(--sys-bg); backdrop-filter: var(--sys-blur); -webkit-backdrop-filter: var(--sys-blur);
-            border: 1px solid var(--sys-border); border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-            display: flex; flex-direction: column; overflow: hidden;
-            animation: fadeInPanel 0.5s ease forwards; opacity: 0; transform: translateY(15px);
-        }
-        @keyframes fadeInPanel { to { opacity: 1; transform: translateY(0); } }
+        body { margin: 0; padding: 0; height: 100vh; overflow: hidden; color: var(--text-main); background: linear-gradient(-45deg, #09131a, #162a35, #1e3a47, #0b141d); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
         
-        /* Особые размеры для некоторых панелей */
-        .panel-large { grid-column: span 2; }
-        .panel-full { grid-column: 1 / -1; }
+        .top-menu { position: fixed; top: 0; left: 0; width: 100%; height: 30px; background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 13px; font-weight: 500; z-index: 10000; border-bottom: 1px solid rgba(255,255,255,0.1); display: none; }
+        .dashboard-container { display: none; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); grid-auto-rows: min-content; gap: 20px; padding: 50px 20px 20px 20px; height: 100vh; overflow-y: auto; overflow-x: hidden; }
+        .panel { background: var(--sys-bg); backdrop-filter: var(--sys-blur); -webkit-backdrop-filter: var(--sys-blur); border: 1px solid var(--sys-border); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; animation: fadeInPanel 0.5s ease forwards; opacity: 0; transform: translateY(15px); }
+        @keyframes fadeInPanel { to { opacity: 1; transform: translateY(0); } }
+        .panel-large { grid-column: span 2; } .panel-full { grid-column: 1 / -1; }
         @media (max-width: 768px) { .panel-large { grid-column: span 1; } }
-
-        .panel:nth-child(1) { animation-delay: 0.1s; }
-        .panel:nth-child(2) { animation-delay: 0.2s; }
-        .panel:nth-child(3) { animation-delay: 0.3s; }
-        .panel:nth-child(4) { animation-delay: 0.4s; }
-        .panel:nth-child(5) { animation-delay: 0.5s; }
-        .panel:nth-child(6) { animation-delay: 0.6s; }
-
-        .panel-title {
-            font-size: 15px; font-weight: 700; color: #fff;
-            padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            background: rgba(0,0,0,0.3); letter-spacing: 0.5px;
-        }
-
+        .panel-title { font-size: 15px; font-weight: 700; color: #fff; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.3); }
         .content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-
-        /* ПОДВАЛ / ИНФО */
-        .footer-info {
-            grid-column: 1 / -1;
-            text-align: center; padding: 20px; margin-top: 10px; margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px;
-            color: var(--text-muted); font-size: 15px;
-            animation: fadeInPanel 0.5s ease forwards; opacity: 0; transform: translateY(15px); animation-delay: 0.8s;
-        }
-
-        /* === ЭЛЕМЕНТЫ УПРАВЛЕНИЯ === */
-        input, select {
-            width: 100%; padding: 10px 14px; margin-bottom: 8px;
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px; color: white; font-size: 14px; outline: none; transition: 0.2s;
-        }
+        
+        input, select { width: 100%; padding: 10px 14px; margin-bottom: 8px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; font-size: 14px; outline: none; transition: 0.2s; }
         input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(10,132,255,0.3); background: rgba(0,0,0,0.6); }
-        select {
-            appearance: none; cursor: pointer;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
-        }
-        select option { background: #1e1e1e; color: white; }
-
-        .btn {
-            background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px;
-            font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            display: flex; justify-content: center; align-items: center; gap: 8px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .btn:hover { background: #0066cc; transform: translateY(-2px); }
-        .btn:active { transform: scale(0.96); }
+        .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .btn:hover { background: #0066cc; transform: translateY(-2px); } .btn:active { transform: scale(0.96); }
         .btn-danger { background: #ff453a; } .btn-danger:hover { background: #d32f2f; }
-        .btn-glass { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); box-shadow: none; }
-        .btn-glass:hover { background: rgba(255,255,255,0.2); }
-
+        .btn-glass { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); box-shadow: none; } .btn-glass:hover { background: rgba(255,255,255,0.2); }
+        
         .card { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .list-item:last-child { border-bottom: none; padding-bottom: 0; }
-
-        /* === ЭКРАН БЛОКИРОВКИ === */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 99999;
-            transition: opacity 0.5s ease; background: rgba(0,0,0,0.6);
-        }
+        
+        #login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 99999; transition: opacity 0.5s ease; background: rgba(0,0,0,0.6); }
         .login-avatar { width: 130px; height: 130px; border-radius: 50%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.2); }
         .login-input-wrap { position: relative; width: 260px; margin-bottom: 10px; }
         .login-input-wrap input { padding-right: 40px; border-radius: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.3); text-align: center; font-size: 16px; }
         .login-btn { position: absolute; right: 5px; top: 5px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; transition: 0.2s; font-size: 18px; }
-        .login-btn:hover { background: rgba(255,255,255,0.5); }
-
-        /* === ВНУТРЕННОСТИ ПАНЕЛЕЙ === */
-        .prof-header { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
-        .prof-header img { width: 100px; height: 100px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); image-rendering: pixelated; }
-        .bal-box { background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); flex: 1; text-align: center; }
         
-        /* HEYDOG АНИМАЦИИ */
         .heydog-wrapper { position: relative; display: inline-block; cursor: crosshair; }
         .heydog-wrapper img { width: 140px; transition: 0.1s; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); border-radius: 15px; }
         .heydog-wrapper:active img { transform: scale(0.90); filter: brightness(0.5) sepia(1) hue-rotate(-50deg) saturate(5); }
         @keyframes stickIn { 0% { transform: scale(3) rotate(-45deg); opacity: 0; } 100% { transform: scale(1) rotate(var(--rot)); opacity: 1; } }
         @keyframes fadeOutHit { to { opacity: 0; transform: scale(0.5); } }
-        .sword-hit {
-            position: absolute; font-size: 50px; pointer-events: none;
-            animation: stickIn 0.1s ease-out forwards, fadeOutHit 1s ease-in 1s forwards;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.8); z-index: 10;
-        }
-
-        /* МЭРИЯ MENU */
+        .sword-hit { position: absolute; font-size: 50px; pointer-events: none; animation: stickIn 0.1s ease-out forwards, fadeOutHit 1s ease-in 1s forwards; text-shadow: 0 5px 15px rgba(0,0,0,0.8); z-index: 10; }
+        
         .admin-nav { display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .admin-tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: #ddd; background: rgba(0,0,0,0.3); transition: 0.2s; border: 1px solid rgba(255,255,255,0.05); }
-        .admin-tab:hover { background: rgba(255,255,255,0.2); }
         .admin-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .admin-panel-section { display: none; }
-        .admin-panel-section.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity:0; } to {opacity:1;} }
-
-        /* УВЕДОМЛЕНИЯ MACOS */
+        .admin-panel-section { display: none; } .admin-panel-section.active { display: block; }
+        
         #notif-container { position: fixed; top: 40px; right: 20px; z-index: 100000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .mac-toast {
-            background: rgba(30, 30, 35, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); min-width: 250px;
-            animation: slideInRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), fadeOut 0.5s 4s forwards;
-            display: flex; gap: 15px; align-items: center;
-        }
-        .mac-toast img { width: 40px; height: 40px; border-radius: 10px; }
-        .mac-toast-text h4 { margin: 0 0 4px 0; font-size: 15px; }
-        .mac-toast-text p { margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.3; }
-        @keyframes slideInRight { from { transform: translateX(120%); } to { transform: translateX(0); } }
-
-        /* ЖЕСТКИЕ ПРАНКИ (ХАРДКОР) */
-        @keyframes hardcoreShake {
-            0% { transform: translate(0,0) rotate(0); filter: hue-rotate(0deg); }
-            10% { transform: translate(-30px, 30px) rotate(-5deg); filter: hue-rotate(90deg); }
-            20% { transform: translate(30px, -20px) rotate(5deg); }
-            30% { transform: translate(-40px, -40px) rotate(-10deg); }
-            40% { transform: translate(40px, 30px) rotate(10deg); }
-            50% { transform: translate(-20px, 50px) rotate(-5deg); }
-            60% { transform: translate(50px, -30px) rotate(5deg); }
-            70% { transform: translate(-50px, -50px) rotate(-15deg); }
-            80% { transform: translate(40px, 40px) rotate(15deg); }
-            90% { transform: translate(-30px, -20px) rotate(-5deg); }
-            100% { transform: translate(0,0) rotate(0); filter: hue-rotate(360deg); }
-        }
+        .mac-toast { background: rgba(30, 30, 35, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; gap: 15px; align-items: center; animation: slideInRight 0.4s forwards, fadeOut 0.5s 4s forwards; }
+        @keyframes slideInRight { from { transform: translateX(120%); } to { transform: translateX(0); } } @keyframes fadeOut { to { opacity: 0; } }
+        
+        /* ПРАНКИ ХАРДКОР */
+        @keyframes hardcoreShake { 0% { transform: translate(0,0) rotate(0); filter: hue-rotate(0deg); } 20% { transform: translate(-30px, 30px) rotate(-5deg); filter: hue-rotate(90deg); } 40% { transform: translate(30px, -20px) rotate(5deg); } 60% { transform: translate(-40px, -40px) rotate(-10deg); } 80% { transform: translate(40px, 30px) rotate(10deg); } 100% { transform: translate(0,0) rotate(0); filter: hue-rotate(360deg); } }
         .shake-hardcore { animation: hardcoreShake 0.1s infinite; }
-
-        /* Скроллбары */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.5); }
+        @keyframes hardcoreMelt { 0% { transform: translateY(0) skewX(0) scale(1); filter: blur(0); } 100% { transform: translateY(150vh) skewX(45deg) scale(1.5); filter: blur(20px); opacity: 0; } }
+        .melt-hardcore { animation: hardcoreMelt 5s forwards; pointer-events: none; }
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- ЭКРАН БЛОКИРОВКИ -->
     <div id="login-screen">
-        <h1 style="font-size: 48px; text-shadow: 0 4px 20px rgba(0,0,0,0.8); margin-bottom: 40px; letter-spacing: 2px;">Visya OS</h1>
+        <h1 style="font-size: 48px; text-shadow: 0 4px 20px rgba(0,0,0,0.8); margin-bottom: 20px;">Visya OS</h1>
         <img src="https://minotar.net/helm/Maxutko201/150.png" class="login-avatar" id="login-avatar-img">
-        <div style="font-size: 22px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">Вход в систему</div>
-        
-        <div class="login-input-wrap">
-            <input type="text" id="username" placeholder="Логин (Никнейм)" oninput="updateLoginAvatar()">
-        </div>
-        <div class="login-input-wrap">
-            <input type="password" id="password" placeholder="Пароль" onkeydown="if(event.key === 'Enter') login()">
-            <button class="login-btn" onclick="login()">→</button>
-        </div>
+        <div style="font-size: 16px; font-weight: 700; margin-bottom: 20px; color: yellow;" id="login-status">Подключение к Базе Данных... ⏳</div>
+        <div class="login-input-wrap"><input type="text" id="username" placeholder="Логин (Никнейм)" oninput="updateLoginAvatar()"></div>
+        <div class="login-input-wrap"><input type="password" id="password" placeholder="Пароль" onkeydown="if(event.key === 'Enter') login()"><button class="login-btn" onclick="login()">→</button></div>
     </div>
 
-    <!-- ВЕРХНЕЕ МЕНЮ -->
     <div class="top-menu" id="top-menu">
-        <div class="top-menu-left">
-            <b><span style="font-size: 18px;"></span> Visya Network</b>
-            <span>Файл</span><span>Сервисы</span><span>База данных</span>
-        </div>
+        <div class="top-menu-left"><b style="font-size: 18px;"> Visya Network</b></div>
         <div class="top-menu-right">
+            <span id="sync-status" style="font-weight: bold; transition: 0.3s;" title="Статус синхронизации">📶</span>
             <span style="cursor: pointer; color: #ff453a; font-weight: bold;" onclick="logout()">Завершить сеанс</span>
-            <span>📶</span><span>100% 🔋</span>
             <span id="clock" style="font-weight: bold;">12:00</span>
         </div>
     </div>
 
-    <!-- === ЕДИНЫЙ ДАШБОРД (СТРОГАЯ СЕТКА GRID) === -->
     <div class="dashboard-container" id="main-dashboard">
-        
         <!-- 1. ПРОФИЛЬ -->
         <div class="panel panel-large">
             <div class="panel-title">👤 Личное дело</div>
             <div class="content">
-                <div class="card prof-header">
-                    <img id="player-avatar" src="">
-                    <div>
-                        <h2 style="margin: 0; font-size: 28px;" id="player-name">Игрок</h2>
-                        <p style="margin: 5px 0 15px 0; color: var(--text-muted); font-size: 15px;">ID Гражданина: <b id="player-id" style="color: #fff;"></b></p>
-                    </div>
-                    <div style="display: flex; gap: 15px; justify-content: center; width: 100%;">
-                        <div class="bal-box">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Баланс ВисяКоинов</div>
-                            <div style="font-size: 24px; font-weight: 800; color: #32d74b;"><span id="vk-balance">0</span> VK</div>
-                        </div>
-                        <div class="bal-box">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Элитная валюта</div>
-                            <div style="font-size: 24px; font-weight: 800; color: #bf5af2;"><span id="ar-balance">0</span> AR</div>
-                        </div>
-                    </div>
+                <div class="card" style="display: flex; gap: 20px; align-items: center; margin-bottom: 10px;">
+                    <img id="player-avatar" src="" style="width:100px; border-radius:20px; box-shadow:0 5px 20px rgba(0,0,0,0.4); image-rendering:pixelated;">
+                    <div style="flex:1;"><h2 style="margin: 0; font-size: 28px;" id="player-name">Игрок</h2><p style="margin: 5px 0 15px 0; color: var(--text-muted);">ID: <b id="player-id" style="color: #fff;"></b></p></div>
+                    <div style="background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 12px; text-align: center;"><div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Баланс ВисяКоинов</div><div style="font-size: 24px; font-weight: 800; color: #32d74b;"><span id="vk-balance">0</span> VK</div></div>
+                    <div style="background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 12px; text-align: center;"><div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Элитная валюта</div><div style="font-size: 24px; font-weight: 800; color: #bf5af2;"><span id="ar-balance">0</span> AR</div></div>
                 </div>
-
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <div class="card" style="flex: 1.2; min-width: 250px; max-height: 250px; overflow-y: auto;">
-                        <h4 style="margin: 0 0 10px 0; color: var(--text-muted);">Магазин услуг</h4>
-                        <div id="shop-container"></div>
+                    <div class="card" style="flex: 1.2; max-height: 250px; overflow-y: auto;">
+                        <h4 style="margin: 0 0 10px 0; color: var(--text-muted);">Магазин услуг</h4><div id="shop-container"></div>
                         <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
-                        <div class="list-item">
-                            <div><div style="font-size: 15px; font-weight: bold; color: #bf5af2;">1 AR Монета</div><div style="font-size: 13px; color: var(--text-muted);">1000 VK</div></div>
-                            <button class="btn btn-glass" style="color: #bf5af2;" onclick="buyAR()">Обменять</button>
-                        </div>
+                        <div class="list-item"><div><div style="font-size: 15px; font-weight: bold; color: #bf5af2;">1 AR Монета</div><div style="font-size: 13px; color: var(--text-muted);">1000 VK</div></div><button class="btn btn-glass" style="color: #bf5af2;" onclick="buyAR()">Обменять</button></div>
                     </div>
-                    <div class="card" style="flex: 1; min-width: 200px;">
-                        <h4 style="margin: 0 0 10px 0; color: var(--text-muted);">Имущество</h4>
-                        <ul id="inventory" style="margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.8;"></ul>
-                    </div>
+                    <div class="card" style="flex: 1;"><h4 style="margin: 0 0 10px 0; color: var(--text-muted);">Имущество</h4><ul id="inventory" style="margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.8;"></ul></div>
                 </div>
             </div>
         </div>
@@ -265,24 +103,13 @@
         <!-- 2. ШТРАФЫ -->
         <div class="panel">
             <div class="panel-title">⚖️ Служба приставов</div>
-            <div class="content">
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <div style="font-size: 50px;">🚨</div>
-                </div>
-                <div id="fines-list-app" style="max-height: 300px; overflow-y: auto;"></div>
-            </div>
+            <div class="content"><div style="text-align: center; margin-bottom: 10px; font-size: 50px;">🚨</div><div id="fines-list-app" style="max-height: 300px; overflow-y: auto;"></div></div>
         </div>
 
         <!-- 3. БАНК -->
         <div class="panel">
             <div class="panel-title">🏦 VisyaBank</div>
-            <div class="content" style="text-align: center;">
-                <div style="font-size: 60px; margin-bottom: 10px;">💸</div>
-                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Моментальные переводы жителям.</p>
-                <input type="text" id="transfer-to" placeholder="Ник получателя">
-                <input type="number" id="transfer-amount" placeholder="Сумма перевода (VK)">
-                <button class="btn" style="width: 100%; margin-top: 10px; font-size: 16px;" onclick="transferVK()">Отправить средства</button>
-            </div>
+            <div class="content" style="text-align: center;"><div style="font-size: 60px; margin-bottom: 10px;">💸</div><p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Моментальные переводы.</p><input type="text" id="transfer-to" placeholder="Ник получателя"><input type="number" id="transfer-amount" placeholder="Сумма перевода (VK)"><button class="btn" style="width: 100%; margin-top: 10px; font-size: 16px;" onclick="transferVK()">Отправить средства</button></div>
         </div>
 
         <!-- 4. ИГРА HEYDOG -->
@@ -290,544 +117,297 @@
             <div class="panel-title">⚔️ Антистресс (10 VK)</div>
             <div class="content" style="text-align: center;">
                 <div style="font-weight: 800; margin-bottom: 15px; font-size: 20px;">Твои удары: <span id="my-hits" style="color:#ff453a;">0</span></div>
-                
-                <div class="heydog-wrapper" id="heydog-area" onclick="hitHeydog(event)">
-                    <img src="https://minotar.net/helm/heidog/150.png" id="dog-img">
-                </div>
-                
-                <div style="text-align: left; margin-top: 25px;">
-                    <h4 style="margin: 0 0 10px 0; color: var(--text-muted);">Топ избивателей:</h4>
-                    <div class="card" id="heydog-top" style="padding: 10px;"></div>
-                </div>
+                <div class="heydog-wrapper" id="heydog-area" onclick="hitHeydog(event)"><img src="https://minotar.net/helm/heidog/150.png" id="dog-img"></div>
+                <div style="text-align: left; margin-top: 25px;"><h4 style="margin: 0 0 10px 0; color: var(--text-muted);">Топ избивателей:</h4><div class="card" id="heydog-top" style="padding: 10px;"></div></div>
             </div>
         </div>
 
         <!-- 5. ФОРБС -->
         <div class="panel">
             <div class="panel-title">👑 Топ Forbes</div>
-            <div class="content">
-                <div class="card" id="forbes-list" style="padding: 10px 15px; max-height: 400px; overflow-y: auto;"></div>
-            </div>
+            <div class="content"><div class="card" id="forbes-list" style="padding: 10px 15px; max-height: 400px; overflow-y: auto;"></div></div>
         </div>
 
         <!-- 6. МЭРИЯ (ТОЛЬКО ДЛЯ MAXUTKO201) -->
         <div class="panel panel-full" id="admin-panel" style="display: none;">
             <div class="panel-title" style="color: #ff453a; font-size: 20px; background: rgba(255, 69, 58, 0.15); font-weight: 800;">⚙️ ПАНЕЛЬ БОГА (Maxutko201)</div>
             <div class="content">
-                
                 <div class="admin-nav">
                     <div class="admin-tab active" onclick="switchAdminTab(this, 'admin-sec-users')">👥 Пользователи</div>
                     <div class="admin-tab" onclick="switchAdminTab(this, 'admin-sec-fines')">⚖️ Штрафы</div>
-                    <div class="admin-tab" onclick="switchAdminTab(this, 'admin-sec-logs')">📜 Логи</div>
+                    <div class="admin-tab" onclick="switchAdminTab(this, 'admin-sec-logs')">📜 Логи сервера</div>
                     <div class="admin-tab" style="color: #ff453a; border-color: rgba(255,69,58,0.5);" onclick="switchAdminTab(this, 'admin-sec-pranks')">💀 ХАРДКОР ПРАНКИ</div>
                 </div>
                 
-                <!-- Контент Мэрии -->
                 <div id="admin-sec-users" class="admin-panel-section active">
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div class="card" style="flex: 1; min-width: 300px;">
-                            <h3 style="margin:0 0 15px 0; color: #fff;">Создать жителя</h3>
-                            <input type="text" id="new-user-name" placeholder="Никнейм">
-                            <input type="text" id="new-user-pass" placeholder="Пароль">
-                            <input type="text" id="new-user-id" placeholder="Выдать ID номер (например, 7777)">
-                            <button class="btn btn-glass" style="width:100%; margin-top: 10px;" onclick="createAccount()">Зарегистрировать в базе (0 VK)</button>
-                        </div>
-
-                        <div class="card" style="flex: 1; min-width: 300px;">
-                            <h3 style="margin:0 0 15px 0; color: #fff;">Редактировать профиль</h3>
-                            <select id="admin-user-select" onchange="loadUserInAdmin()"></select>
-                            <div id="admin-user-editor" style="display: none;">
-                                <div style="display:flex; gap:10px;">
-                                    <div style="flex:1;"><small>Баланс VK</small><input type="number" id="admin-vk"></div>
-                                    <div style="flex:1;"><small>Баланс AR</small><input type="number" id="admin-ar"></div>
-                                </div>
-                                <small>Изменить ID номер</small>
-                                <input type="text" id="admin-id" placeholder="ID">
-                                <small>Выдать имущество</small>
-                                <div id="admin-licenses" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px;"></div>
-                                <button class="btn" style="width:100%;" onclick="saveUserChanges()">Сохранить изменения</button>
-                            </div>
-                        </div>
+                        <div class="card" style="flex: 1; min-width: 300px;"><h3 style="margin:0 0 15px 0; color: #fff;">Создать жителя</h3><input type="text" id="new-user-name" placeholder="Никнейм"><input type="text" id="new-user-pass" placeholder="Пароль"><input type="text" id="new-user-id" placeholder="Выдать ID номер (например, 7777)"><button class="btn btn-glass" style="width:100%; margin-top: 10px;" onclick="createAccount()">Зарегистрировать в базе (0 VK)</button></div>
+                        <div class="card" style="flex: 1; min-width: 300px;"><h3 style="margin:0 0 15px 0; color: #fff;">Редактировать профиль</h3><select id="admin-user-select" onchange="loadUserInAdmin()"></select><div id="admin-user-editor" style="display: none;"><div style="display:flex; gap:10px;"><div style="flex:1;"><small>Баланс VK</small><input type="number" id="admin-vk"></div><div style="flex:1;"><small>Баланс AR</small><input type="number" id="admin-ar"></div></div><small>Изменить ID номер</small><input type="text" id="admin-id" placeholder="ID"><small>Выдать имущество</small><div id="admin-licenses" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px;"></div><button class="btn" style="width:100%;" onclick="saveUserChanges()">Сохранить изменения</button></div></div>
                     </div>
                 </div>
 
-                <div id="admin-sec-fines" class="admin-panel-section">
-                    <div class="card" style="max-width: 500px;">
-                        <h3 style="margin:0 0 15px 0; color: #ff453a;">Выписать штраф</h3>
-                        <select id="fine-user-select"></select>
-                        <input type="text" id="fine-reason" placeholder="Причина (напр. Воровство)">
-                        <input type="number" id="fine-amount" placeholder="Сумма (VK)">
-                        <button class="btn btn-danger" style="width: 100%; margin-top: 10px;" onclick="issueFine()">ОШТРАФОВАТЬ ИГРОКА</button>
-                    </div>
-                </div>
+                <div id="admin-sec-fines" class="admin-panel-section"><div class="card" style="max-width: 500px;"><h3 style="margin:0 0 15px 0; color: #ff453a;">Выписать штраф</h3><select id="fine-user-select"></select><input type="text" id="fine-reason" placeholder="Причина (напр. Воровство)"><input type="number" id="fine-amount" placeholder="Сумма (VK)"><button class="btn btn-danger" style="width: 100%; margin-top: 10px;" onclick="issueFine()">ОШТРАФОВАТЬ ИГРОКА</button></div></div>
 
-                <div id="admin-sec-logs" class="admin-panel-section">
-                    <div class="card" style="background: rgba(0,0,0,0.6); font-family: monospace; font-size: 14px; line-height: 1.6; max-height: 400px; overflow-y: auto; color: #32d74b;" id="global-logs-container">
-                        [Система] Логирование активно...<br>
-                    </div>
-                    <button class="btn btn-glass" style="font-size: 13px;" onclick="document.getElementById('global-logs-container').innerHTML=''">Очистить консоль логов</button>
-                </div>
+                <div id="admin-sec-logs" class="admin-panel-section"><div class="card" style="background: rgba(0,0,0,0.6); font-family: monospace; font-size: 14px; line-height: 1.6; max-height: 400px; overflow-y: auto; color: #32d74b;" id="global-logs-container">Загрузка логов...<br></div></div>
 
-                <div id="admin-sec-pranks" class="admin-panel-section">
-                    <div class="card" style="border: 2px solid rgba(255,69,58,0.5); background: rgba(255,69,58,0.1);">
-                        <select id="prank-user-select" style="background: rgba(0,0,0,0.7); font-size: 16px; font-weight: bold;"></select>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
-                            <button class="btn btn-glass" onclick="prank('scare')">💀 СКРИМЕР (ШОК)</button>
-                            <button class="btn btn-glass" onclick="prank('shake')">ЖЕСТКАЯ Тряска</button>
-                            <button class="btn btn-glass" onclick="prank('spam')">Вирусный Спам</button>
-                            <button class="btn btn-glass" onclick="prank('delete')">Удалить OS (Terminal)</button>
-                            <button class="btn btn-danger" style="grid-column: 1 / -1; font-size: 18px; padding: 15px;" onclick="prank('bsod')">КРИТИЧЕСКИЙ КРАШ (BSOD)</button>
-                        </div>
-                    </div>
-                </div>
-
+                <div id="admin-sec-pranks" class="admin-panel-section"><div class="card" style="border: 2px solid rgba(255,69,58,0.5); background: rgba(255,69,58,0.1);"><select id="prank-user-select" style="background: rgba(0,0,0,0.7); font-size: 16px; font-weight: bold;"></select><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;"><button class="btn btn-glass" onclick="prank('scare')">💀 СКРИМЕР (ШОК)</button><button class="btn btn-glass" onclick="prank('shake')">ЖЕСТКАЯ Тряска</button><button class="btn btn-glass" onclick="prank('spam')">Вирусный Спам</button><button class="btn btn-glass" onclick="prank('delete')">Удалить OS (Terminal)</button><button class="btn btn-danger" style="grid-column: 1 / -1; font-size: 18px; padding: 15px;" onclick="prank('bsod')">КРИТИЧЕСКИЙ КРАШ (BSOD)</button><button class="btn btn-danger" style="grid-column: 1 / -1; font-size: 16px; padding: 10px; background: darkred;" onclick="hardResetDB()">⚠️ ОБНУЛИТЬ ВСЮ БАЗУ ДАННЫХ ⚠️</button></div></div></div>
             </div>
         </div>
         
-        <!-- ПОДВАЛ (ИНФОРМАЦИЯ И ПОДДЕРЖКА) -->
-        <div class="footer-info">
+        <!-- ПОДВАЛ ИНФО -->
+        <div style="grid-column: 1 / -1; text-align: center; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; color: var(--text-muted); font-size: 15px; border: 1px solid rgba(255,255,255,0.05);">
             🛠️ Нашли баг/ошибку или нужно <b>обналичить AR</b>? Пишите Главному Администратору в Discord: <b style="color: #0a84ff;">@maxutko201</b>
         </div>
-
     </div>
 
-    <!-- СИСТЕМНЫЕ УВЕДОМЛЕНИЯ -->
+    <!-- УВЕДОМЛЕНИЯ -->
     <div id="notif-container"></div>
-    
-    <!-- ФЕЙКОВЫЕ ЭКРАНЫ ДЛЯ ПРАНКОВ -->
-    <div id="bsod" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0000aa; color:white; z-index:999999; display:none; flex-direction:column; justify-content:center; align-items:center; font-family:monospace; text-align:center;">
-        <h1 style="background:white; color:#0000aa; padding:5px 20px; font-size: 40px; margin-bottom: 30px;">Windows</h1>
-        <p style="font-size: 28px;">A FATAL EXCEPTION 0x00000000 HAS OCCURRED.</p>
-        <p style="font-size: 28px; margin-top: 20px;">SYSTEM DESTROYED BY MAXUTKO201.</p>
-        <p style="font-size: 24px; margin-top: 50px; color: yellow;">PLEASE REBOOT YOUR COMPUTER.</p>
-    </div>
+    <div id="bsod" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0000aa; color:white; z-index:999999; display:none; flex-direction:column; justify-content:center; align-items:center; font-family:monospace; text-align:center;"><h1 style="background:white; color:#0000aa; padding:5px 20px; font-size: 40px; margin-bottom: 30px;">Windows</h1><p style="font-size: 28px;">A FATAL EXCEPTION 0x00000000 HAS OCCURRED.</p><p style="font-size: 28px; margin-top: 20px;">SYSTEM DESTROYED BY MAXUTKO201.</p><p style="font-size: 24px; margin-top: 50px; color: yellow;">PLEASE REBOOT YOUR COMPUTER.</p></div>
 
 <script>
-    // ЛОГИ
-    let globalLogs = [];
-
-    // === БАЗА ДАННЫХ ===
-    // По твоей просьбе: все балансы и очки обнулены!
-    let database = {
-        "Maxutko201": { password: "28042010", role: "admin", id: "0001", vk: 0, ar: 0, items: ["GOD MODE"], fines: [], heydogHits: 0 },
-        "Radon4546": { password: "123", role: "player", id: "6194", vk: 0, ar: 0, items: ["Паспорт"], fines: [], heydogHits: 0 },
-        "Steve": { password: "123", role: "player", id: "1005", vk: 0, ar: 0, items: ["Паспорт"], fines: [], heydogHits: 0 }
-    };
-
+    let database = null;
+    let currentUser = null;
     const shopItems = [
-        { id: "beer", name: "Лицензия на пиво 🍺", price: 50 },
-        { id: "apartment", name: "Апгрейд дома 🏢", price: 150 },
-        { id: "wine", name: "Лицензия на вино 🍷", price: 150 },
-        { id: "vip_club", name: "ВИП в клуб 🪩", price: 200 },
-        { id: "live_heads", name: "Жить с главами 👑", price: 201 },
-        { id: "relations", name: "Связи с главами 🤝", price: 250 },
-        { id: "business", name: "Бизнес лицензия 📈", price: 800 },
-        { id: "frost", name: "Запасы Фростхевена ❄️", price: 900 }
+        { id: "beer", name: "Лицензия на пиво 🍺", price: 50 }, { id: "apartment", name: "Апгрейд дома 🏢", price: 150 },
+        { id: "wine", name: "Лицензия на вино 🍷", price: 150 }, { id: "vip_club", name: "ВИП в клуб 🪩", price: 200 },
+        { id: "live_heads", name: "Жить с главами 👑", price: 201 }, { id: "relations", name: "Связи с главами 🤝", price: 250 },
+        { id: "business", name: "Бизнес лицензия 📈", price: 800 }, { id: "frost", name: "Запасы Фростхевена ❄️", price: 900 }
     ];
 
-    let currentUser = null;
+    // ПОДКЛЮЧЕНИЕ К БАЗЕ VERCEL KV
+    async function initServer() {
+        try {
+            const res = await fetch('/api/get');
+            database = await res.json();
+            document.getElementById('login-status').innerText = "Вход разрешен (Подключено к Серверу 🟢)";
+            document.getElementById('login-status').style.color = "#32d74b";
+        } catch (e) {
+            document.getElementById('login-status').innerText = "Ошибка сервера! Запустите локально. 🔴";
+            document.getElementById('login-status').style.color = "#ff453a";
+            // Заглушка, если Vercel не настроен
+            database = { "Maxutko201": { password: "28042010", role: "admin", id: "0001", vk: 0, ar: 0, items: ["GOD MODE"], fines: [], heydogHits: 0, serverLogs: ["[Система] База данных успешно инициализирована!"] } };
+        }
+    }
+    initServer();
 
-    // === УТИЛИТЫ ===
+    // === СИСТЕМА REAL-TIME ОБНОВЛЕНИЯ ДАННЫХ ===
+    let syncTimeout;
+    let isSaving = false;
+
+    // Функция сохранения на сервер
+    function syncDB() {
+        isSaving = true;
+        clearTimeout(syncTimeout);
+        syncTimeout = setTimeout(async () => {
+            try {
+                await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(database) });
+            } catch(e) {}
+            setTimeout(() => { isSaving = false; }, 500);
+        }, 1000);
+    }
+
+    // Фоновая загрузка новых данных с сервера каждые 5 секунд
+    setInterval(async () => {
+        if (!currentUser || isSaving) return; // Не обновляем, если игрок сам сейчас тыкает кнопки
+        try {
+            const res = await fetch('/api/get');
+            const serverDb = await res.json();
+            
+            // Если кто-то другой изменил базу (выписал штраф, перевел деньги)
+            if (JSON.stringify(database) !== JSON.stringify(serverDb)) {
+                database = serverDb;
+                initAllPanels(); // Бесшовно обновляем экран игрока
+                
+                // Мигаем значком 🔄
+                const syncIcon = document.getElementById("sync-status");
+                syncIcon.innerText = "🔄"; syncIcon.style.color = "#32d74b";
+                setTimeout(() => { syncIcon.innerText = "📶"; syncIcon.style.color = "white"; }, 1500);
+            }
+        } catch (e) {}
+    }, 5000);
+
+    // УТИЛИТЫ И ЛОГИ
     function notifyMac(title, message, type="info") {
         const c = document.getElementById('notif-container');
-        const t = document.createElement('div');
-        t.className = 'mac-toast';
+        const t = document.createElement('div'); t.className = 'mac-toast';
         let color = type === "error" ? "color: #ff453a;" : "";
-        t.innerHTML = `
-            <img src="https://minotar.net/helm/${currentUser||'Steve'}/100.png">
-            <div class="mac-toast-text">
-                <h4 style="${color}">${title}</h4>
-                <p>${message}</p>
-            </div>
-        `;
-        c.appendChild(t);
-        setTimeout(() => { if (t.parentNode) t.remove(); }, 4500);
+        t.innerHTML = `<img src="https://minotar.net/helm/${currentUser||'Steve'}/100.png"><div class="mac-toast-text"><h4 style="${color}">${title}</h4><p>${message}</p></div>`;
+        c.appendChild(t); setTimeout(() => { if (t.parentNode) t.remove(); }, 4500);
         if(type === "error") new Audio('https://www.myinstants.com/media/sounds/erro.mp3').play();
     }
 
     function addLog(text) {
         const time = new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-        globalLogs.unshift(`[${time}] ${text}`); 
+        if(!database["Maxutko201"].serverLogs) database["Maxutko201"].serverLogs = [];
+        database["Maxutko201"].serverLogs.unshift(`[${time}] ${text}`);
+        if(database["Maxutko201"].serverLogs.length > 200) database["Maxutko201"].serverLogs.pop(); // Ограничиваем историю
+        
         const logCont = document.getElementById('global-logs-container');
-        if(logCont) logCont.innerHTML = globalLogs.join('<br>') + '<br><br>[Система] Логирование активно...';
+        if(logCont) logCont.innerHTML = database["Maxutko201"].serverLogs.join('<br>') + '<br><br>[Система] Сервер запущен...';
+        syncDB();
     }
 
-    // === ЛОГИН ===
-    function updateLoginAvatar() {
-        const val = document.getElementById('username').value || 'Steve';
-        document.getElementById('login-avatar-img').src = `https://minotar.net/helm/${val}/150.png`;
-    }
-
+    // ЛОГИН
+    function updateLoginAvatar() { document.getElementById('login-avatar-img').src = `https://minotar.net/helm/${document.getElementById('username').value || 'Steve'}/150.png`; }
     function login() {
+        if(!database) return notifyMac("Загрузка", "Сервер еще загружается...", "error");
         const user = document.getElementById("username").value;
         const pass = document.getElementById("password").value;
-
         if (database[user] && database[user].password === pass) {
             currentUser = user;
-            
             document.getElementById("login-screen").style.opacity = "0";
             setTimeout(() => { document.getElementById("login-screen").style.display = "none"; }, 500);
-            
             document.getElementById("top-menu").style.display = "flex";
+            document.getElementById("main-dashboard").style.display = "grid";
             
-            // Включаем GRID дашборд
-            const dash = document.getElementById("main-dashboard");
-            dash.style.display = "grid";
+            if (user === "Maxutko201") { document.getElementById("admin-panel").style.display = "flex"; updateAdminSelects(); addLog(`ВНИМАНИЕ: Админ Maxutko201 вошел!`); } 
+            else { document.getElementById("admin-panel").style.display = "none"; addLog(`Игрок ${user} вошел в систему.`); }
             
-            if (user === "Maxutko201") {
-                document.getElementById("admin-panel").style.display = "flex";
-                updateAdminSelects();
-                addLog(`ВНИМАНИЕ: Администратор Maxutko201 вошел в систему.`);
-            } else {
-                document.getElementById("admin-panel").style.display = "none";
-                addLog(`Игрок ${user} вошел в систему.`);
-            }
-            
-            initAllPanels();
-            notifyMac("Visya OS", `Добро пожаловать, ${user}`);
-        } else {
-            notifyMac("Ошибка входа", "Неверный пароль.", "error");
-        }
+            initAllPanels(); notifyMac("Visya OS", `Добро пожаловать, ${user}`);
+        } else notifyMac("Ошибка входа", "Неверный пароль.", "error");
     }
 
     function logout() {
-        addLog(`Игрок ${currentUser} вышел из системы.`);
-        currentUser = null;
-        
-        document.getElementById("top-menu").style.display = "none";
-        document.getElementById("main-dashboard").style.display = "none";
-        
-        const loginScreen = document.getElementById("login-screen");
-        loginScreen.style.display = "flex";
-        setTimeout(() => { loginScreen.style.opacity = "1"; }, 10);
-        
+        addLog(`Игрок ${currentUser} вышел.`); currentUser = null;
+        document.getElementById("top-menu").style.display = "none"; document.getElementById("main-dashboard").style.display = "none";
+        const ls = document.getElementById("login-screen"); ls.style.display = "flex"; setTimeout(() => { ls.style.opacity = "1"; }, 10);
         document.getElementById("password").value = "";
-        
-        // Сброс эффектов
-        document.body.classList.remove("shake-hardcore");
-        document.getElementById("bsod").style.display = "none";
+        document.body.classList.remove("shake-hardcore", "melt-hardcore"); document.getElementById("bsod").style.display = "none";
     }
 
-    function initAllPanels() {
-        loadDashboard();
-        renderForbes();
-        renderHeydog();
-        renderFinesApp();
-    }
+    function initAllPanels() { loadDashboard(); renderForbes(); renderHeydog(); renderFinesApp(); if(currentUser==="Maxutko201") { const l=document.getElementById('global-logs-container'); if(l) l.innerHTML = database["Maxutko201"].serverLogs.join('<br>')+'<br><br>[Система] Активно.'; } }
 
-    // === ПРОФИЛЬ И МАГАЗИН ===
+    // ДАШБОРД (ПРОФИЛЬ, МАГАЗИН)
     function loadDashboard() {
-        if(!currentUser) return;
-        const user = database[currentUser];
-        document.getElementById("player-avatar").src = `https://minotar.net/helm/${currentUser}/100.png`;
-        document.getElementById("player-name").innerText = currentUser;
-        document.getElementById("player-id").innerText = user.id;
-        document.getElementById("vk-balance").innerText = user.vk;
-        document.getElementById("ar-balance").innerText = user.ar;
-
-        const shop = document.getElementById("shop-container");
-        shop.innerHTML = "";
-        shopItems.forEach(item => {
-            shop.innerHTML += `
-                <div class="list-item" style="padding: 10px;">
-                    <div><div style="font-size: 15px; font-weight: 600;">${item.name}</div><div style="color: #32d74b; font-size: 13px;">${item.price} VK</div></div>
-                    <button class="btn btn-glass" onclick="buyItem('${item.id}')">Купить</button>
-                </div>`;
-        });
-
-        const inv = document.getElementById("inventory");
-        inv.innerHTML = user.items.length === 0 ? "<li style='color:gray;'>Ничего нет</li>" : "";
-        user.items.forEach(item => { inv.innerHTML += `<li>✔️ ${item}</li>`; });
+        const u = database[currentUser];
+        document.getElementById("player-avatar").src = `https://minotar.net/helm/${currentUser}/100.png`; document.getElementById("player-name").innerText = currentUser; document.getElementById("player-id").innerText = u.id; document.getElementById("vk-balance").innerText = u.vk; document.getElementById("ar-balance").innerText = u.ar;
+        const shop = document.getElementById("shop-container"); shop.innerHTML = "";
+        shopItems.forEach(i => { shop.innerHTML += `<div class="list-item"><div><div style="font-size:15px; font-weight:600;">${i.name}</div><div style="color:#32d74b; font-size:13px;">${i.price} VK</div></div><button class="btn btn-glass" onclick="buyItem('${i.id}')">Купить</button></div>`; });
+        const inv = document.getElementById("inventory"); inv.innerHTML = u.items.length === 0 ? "<li style='color:gray;'>Ничего нет</li>" : "";
+        u.items.forEach(i => { inv.innerHTML += `<li>✔️ ${i}</li>`; });
     }
 
     function buyItem(id) {
         const item = shopItems.find(i => i.id === id);
         if (database[currentUser].items.includes(item.name)) return notifyMac("Магазин", "Уже приобретено.", "error");
         if (database[currentUser].vk >= item.price) {
-            database[currentUser].vk -= item.price;
-            database[currentUser].items.push(item.name);
-            addLog(`🛒 ${currentUser} купил "${item.name}" за ${item.price} VK.`);
-            notifyMac("Успех", `Куплено: ${item.name}`);
-            initAllPanels(); 
+            database[currentUser].vk -= item.price; database[currentUser].items.push(item.name);
+            addLog(`🛒 ${currentUser} купил "${item.name}" за ${item.price} VK.`); notifyMac("Успех", `Куплено: ${item.name}`); syncDB(); initAllPanels(); 
         } else notifyMac("Ошибка", "Недостаточно средств.", "error");
     }
 
     function buyAR() {
         if (database[currentUser].vk >= 1000) {
             database[currentUser].vk -= 1000; database[currentUser].ar += 1;
-            addLog(`💱 ${currentUser} обменял 1000 VK на 1 AR.`);
-            notifyMac("Банк", "Вы купили 1 AR."); initAllPanels();
+            addLog(`💱 ${currentUser} обменял 1000 VK на 1 AR.`); notifyMac("Банк", "Вы купили 1 AR."); syncDB(); initAllPanels();
         } else notifyMac("Ошибка", "Нужно 1000 VK.", "error");
     }
 
-    // === ШТРАФЫ ===
+    // ШТРАФЫ И БАНК
     function renderFinesApp() {
-        const list = document.getElementById('fines-list-app');
-        const userFines = database[currentUser].fines;
-        list.innerHTML = "";
-        if(userFines.length === 0) {
-            list.innerHTML = `<div style="text-align:center; color:gray; font-size:16px; margin-top:30px;">У вас нет штрафов.</div>`;
-            return;
-        }
-        userFines.forEach(f => {
-            list.innerHTML += `
-                <div class="card" style="border: 1px solid #ff453a; background: rgba(255, 69, 58, 0.1);">
-                    <div style="font-weight: 800; font-size: 18px;">${f.reason}</div>
-                    <div style="color: #ff453a; margin: 8px 0 15px 0; font-weight: 800; font-size: 16px;">Сумма: ${f.amount} VK</div>
-                    <button class="btn btn-danger" style="width: 100%; font-size: 16px;" onclick="payFine(${f.id})">Оплатить сейчас</button>
-                </div>`;
-        });
+        const l = document.getElementById('fines-list-app'); const f = database[currentUser].fines; l.innerHTML = "";
+        if(f.length === 0) return l.innerHTML = `<div style="text-align:center; color:gray; margin-top:20px;">У вас нет штрафов.</div>`;
+        f.forEach(x => { l.innerHTML += `<div class="card" style="border: 1px solid #ff453a; background: rgba(255,69,58,0.1);"><div style="font-weight: 800; font-size: 18px;">${x.reason}</div><div style="color:#ff453a; margin: 8px 0 15px 0; font-weight:800;">Сумма: ${x.amount} VK</div><button class="btn btn-danger" style="width:100%;" onclick="payFine(${x.id})">Оплатить сейчас</button></div>`; });
     }
 
     function payFine(id) {
-        const user = database[currentUser];
-        const idx = user.fines.findIndex(f => f.id === id);
-        if(idx === -1) return;
-        const fineAmt = user.fines[idx].amount;
-
-        if (user.vk >= fineAmt) {
-            user.vk -= fineAmt; user.fines.splice(idx, 1);
-            addLog(`⚖️ ${currentUser} оплатил штраф на сумму ${fineAmt} VK.`);
-            notifyMac("Мэрия", "Штраф успешно оплачен."); 
-            initAllPanels();
-        } else notifyMac("Внимание", "Недостаточно средств для оплаты!", "error");
+        const u = database[currentUser]; const idx = u.fines.findIndex(x => x.id === id); if(idx === -1) return;
+        if (u.vk >= u.fines[idx].amount) {
+            u.vk -= u.fines[idx].amount; u.fines.splice(idx, 1);
+            addLog(`⚖️ ${currentUser} оплатил штраф на сумму ${u.fines[idx].amount} VK.`); notifyMac("Мэрия", "Штраф оплачен."); syncDB(); initAllPanels();
+        } else notifyMac("Внимание", "Недостаточно средств!", "error");
     }
 
-    // === БАНК ===
     function transferVK() {
-        const to = document.getElementById("transfer-to").value;
-        const amount = parseInt(document.getElementById("transfer-amount").value);
-        if (!database[to] || amount <= 0 || to === currentUser) return notifyMac("Ошибка", "Проверьте данные перевода.", "error");
-        if (database[currentUser].vk >= amount) {
-            database[currentUser].vk -= amount; database[to].vk += amount;
-            addLog(`💸 ${currentUser} перевел ${amount} VK игроку ${to}.`);
-            notifyMac("Перевод выполнен", `Отправлено ${amount} VK -> ${to}`);
-            document.getElementById("transfer-amount").value = '';
-            initAllPanels();
+        const t = document.getElementById("transfer-to").value; const a = parseInt(document.getElementById("transfer-amount").value);
+        if (!database[t] || a <= 0 || t === currentUser) return notifyMac("Ошибка", "Проверьте данные перевода.", "error");
+        if (database[currentUser].vk >= a) {
+            database[currentUser].vk -= a; database[t].vk += a;
+            addLog(`💸 ${currentUser} перевел ${a} VK -> ${t}.`); notifyMac("Перевод выполнен", `Отправлено ${a} VK -> ${t}`); document.getElementById("transfer-amount").value = ''; syncDB(); initAllPanels();
         } else notifyMac("Отказ", "Недостаточно средств.", "error");
     }
 
-    // === HEYDOG ИГРА (С МЕЧАМИ И ЛИЦОМ heidog) ===
+    // ИГРА И ФОРБС
     function hitHeydog(e) {
         if(database[currentUser].vk >= 10) {
-            database[currentUser].vk -= 10;
-            database[currentUser].heydogHits = (database[currentUser].heydogHits || 0) + 1;
+            database[currentUser].vk -= 10; database[currentUser].heydogHits += 1;
+            if(database[currentUser].heydogHits % 50 === 0) addLog(`🐶 ${currentUser} ударил heidog'а уже ${database[currentUser].heydogHits} раз!`);
             
-            if(database[currentUser].heydogHits % 50 === 0) {
-                addLog(`🐶 ${currentUser} ударил heidog'а уже ${database[currentUser].heydogHits} раз!`);
-            }
+            const area = document.getElementById('heydog-area'); const hit = document.createElement('div');
+            hit.innerText = ['🗡️','⚔️','💥','🧨','🩸'][Math.floor(Math.random()*5)]; hit.className = 'sword-hit';
+            hit.style.left = (e.offsetX - 25) + 'px'; hit.style.top = (e.offsetY - 25) + 'px'; hit.style.setProperty('--rot', (Math.random()*360)+'deg');
+            area.appendChild(hit); setTimeout(() => { if(hit.parentNode) hit.remove(); }, 2500);
 
-            const area = document.getElementById('heydog-area');
-            const hit = document.createElement('div');
-            const emojis = ['🗡️', '⚔️', '💥', '🧨', '🩸'];
-            hit.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            hit.className = 'sword-hit';
-            
-            hit.style.left = (e.offsetX - 25) + 'px';
-            hit.style.top = (e.offsetY - 25) + 'px';
-            hit.style.setProperty('--rot', (Math.random() * 360) + 'deg');
-            area.appendChild(hit);
-            
-            setTimeout(() => { if(hit.parentNode) hit.remove(); }, 2500);
-
-            document.getElementById("my-hits").innerText = database[currentUser].heydogHits;
-            document.getElementById("vk-balance").innerText = database[currentUser].vk;
-            renderHeydog();
-            renderForbes(); 
+            document.getElementById("my-hits").innerText = database[currentUser].heydogHits; document.getElementById("vk-balance").innerText = database[currentUser].vk;
+            syncDB(); renderHeydog(); renderForbes(); 
         } else notifyMac("Ошибка", "Удар стоит 10 VK!", "error");
     }
 
     function renderHeydog() {
-        document.getElementById("my-hits").innerText = database[currentUser].heydogHits || 0;
-        const top = document.getElementById("heydog-top"); top.innerHTML = "";
-        Object.entries(database).sort((a,b) => (b[1].heydogHits||0) - (a[1].heydogHits||0)).slice(0,5).forEach((u,i) => {
-            top.innerHTML += `<div class="list-item" style="padding: 8px 0;"><span><b style="font-size:16px;">${i+1}.</b> ${u[0]}</span><b style="color:#ff453a; font-size:18px;">${u[1].heydogHits} 👊</b></div>`;
-        });
+        const top = document.getElementById("heydog-top"); top.innerHTML = ""; document.getElementById("my-hits").innerText = database[currentUser].heydogHits || 0;
+        Object.entries(database).sort((a,b) => (b[1].heydogHits||0) - (a[1].heydogHits||0)).slice(0,5).forEach((u,i) => { top.innerHTML += `<div class="list-item"><span><b>${i+1}.</b> ${u[0]}</span><b style="color:#ff453a;">${u[1].heydogHits} 👊</b></div>`; });
     }
 
     function renderForbes() {
-        const list = document.getElementById("forbes-list"); list.innerHTML = "";
-        let users = [];
-        for(let key in database) users.push({ name: key, total: database[key].vk + (database[key].ar * 1000) });
-        users.sort((a,b) => b.total - a.total).forEach((u, i) => {
-            let medal = i===0 ? "🥇" : i===1 ? "🥈" : i===2 ? "🥉" : "👤";
-            list.innerHTML += `<div class="list-item" style="padding: 10px 0;"><span style="font-size: 16px; font-weight:600;">${medal} ${u.name}</span><b style="color:#32d74b; font-size:18px;">${u.total.toLocaleString()} $</b></div>`;
-        });
+        const l = document.getElementById("forbes-list"); l.innerHTML = ""; let u = [];
+        for(let k in database) u.push({ n: k, t: database[k].vk + (database[k].ar * 1000) });
+        u.sort((a,b) => b.t - a.t).forEach((x, i) => { l.innerHTML += `<div class="list-item"><span>${i===0?'🥇':i===1?'🥈':i===2?'🥉':'👤'} ${x.n}</span><b style="color:#32d74b;">${x.t.toLocaleString()} $</b></div>`; });
     }
 
-    // === ПАНЕЛЬ МЭРИИ ===
-    function switchAdminTab(el, targetId) {
-        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-        document.querySelectorAll('.admin-panel-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(targetId).classList.add('active');
-    }
-
-    function updateAdminSelects() {
-        let html = '<option value="">Выбрать...</option>';
-        for (let u in database) html += `<option value="${u}">${u}</option>`;
-        document.getElementById("fine-user-select").innerHTML = html;
-        document.getElementById("admin-user-select").innerHTML = html;
-        document.getElementById("prank-user-select").innerHTML = html;
-    }
-
+    // МЭРИЯ И ПРАНКИ
+    function switchAdminTab(el, id) { document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); document.querySelectorAll('.admin-panel-section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function updateAdminSelects() { let h = '<option value="">Выбрать...</option>'; for (let u in database) h += `<option value="${u}">${u}</option>`; document.getElementById("fine-user-select").innerHTML = h; document.getElementById("admin-user-select").innerHTML = h; document.getElementById("prank-user-select").innerHTML = h; }
+    
     function createAccount() {
-        const name = document.getElementById("new-user-name").value;
-        const pass = document.getElementById("new-user-pass").value;
-        const idInput = document.getElementById("new-user-id").value;
-        
-        if (!name || !pass || database[name]) return notifyMac("Ошибка", "Заполните данные корректно.", "error");
-        
-        const finalId = idInput ? idInput : Math.floor(1000 + Math.random() * 9000).toString();
-        // ВАЖНО: баланс нового жителя = 0
-        database[name] = { password: pass, role: "player", id: finalId, vk: 0, ar: 0, items: ["Паспорт"], fines: [], heydogHits: 0 };
-        
-        addLog(`🟢 Мэрия зарегистрировала нового жителя: ${name} (ID: ${finalId}, Баланс: 0 VK)`);
-        notifyMac("Регистрация", `Житель ${name} (ID: ${finalId}) создан.`); 
-        
-        document.getElementById("new-user-name").value = "";
-        document.getElementById("new-user-pass").value = "";
-        document.getElementById("new-user-id").value = "";
-        updateAdminSelects(); initAllPanels();
+        const n = document.getElementById("new-user-name").value; const p = document.getElementById("new-user-pass").value; const i = document.getElementById("new-user-id").value;
+        if (!n || !p || database[n]) return notifyMac("Ошибка", "Заполните данные корректно.", "error");
+        const id = i ? i : Math.floor(1000 + Math.random() * 9000).toString();
+        database[n] = { password: p, role: "player", id: id, vk: 0, ar: 0, items: ["Паспорт"], fines: [], heydogHits: 0 };
+        addLog(`🟢 Зарегистрирован житель: ${n} (ID: ${id}, 0 VK)`); notifyMac("Регистрация", `Житель ${n} создан.`); document.getElementById("new-user-name").value = ""; document.getElementById("new-user-pass").value = ""; document.getElementById("new-user-id").value = ""; syncDB(); updateAdminSelects(); initAllPanels();
     }
 
     function issueFine() {
-        const u = document.getElementById("fine-user-select").value;
-        const r = document.getElementById("fine-reason").value;
-        const a = parseInt(document.getElementById("fine-amount").value);
+        const u = document.getElementById("fine-user-select").value; const r = document.getElementById("fine-reason").value; const a = parseInt(document.getElementById("fine-amount").value);
         if(!u || !r || !a) return notifyMac("Ошибка", "Заполните все данные.", "error");
-        
-        database[u].fines.push({ id: Date.now(), reason: r, amount: a });
-        addLog(`🚨 Мэрия выписала штраф игроку ${u} на сумму ${a} VK (Причина: ${r}).`);
-        notifyMac("Служба приставов", `Штраф отправлен жителю ${u}.`);
-        if(u === currentUser) initAllPanels();
+        database[u].fines.push({ id: Date.now(), reason: r, amount: a }); addLog(`🚨 Штраф игроку ${u} на ${a} VK (${r}).`); notifyMac("Приставы", `Штраф выписан ${u}.`); syncDB(); if(u === currentUser) initAllPanels();
     }
 
     function loadUserInAdmin() {
-        const u = document.getElementById("admin-user-select").value;
-        const ed = document.getElementById("admin-user-editor");
-        if (!u) { ed.style.display = "none"; return; }
-        
-        ed.style.display = "block";
-        document.getElementById("admin-vk").value = database[u].vk;
-        document.getElementById("admin-ar").value = database[u].ar;
-        document.getElementById("admin-id").value = database[u].id;
-        
-        const lic = document.getElementById("admin-licenses"); 
-        lic.innerHTML = "";
-        shopItems.forEach(i => {
-            const has = database[u].items.includes(i.name);
-            lic.innerHTML += `
-                <label style="display:flex; gap:10px; margin-bottom:10px; cursor:pointer; align-items:center; font-size:15px;">
-                    <input type="checkbox" id="adm-chk-${i.id}" ${has ? 'checked' : ''} style="width:20px; height:20px; margin:0;">
-                    ${i.name}
-                </label>`;
-        });
+        const u = document.getElementById("admin-user-select").value; const ed = document.getElementById("admin-user-editor"); if (!u) return ed.style.display = "none";
+        ed.style.display = "block"; document.getElementById("admin-vk").value = database[u].vk; document.getElementById("admin-ar").value = database[u].ar; document.getElementById("admin-id").value = database[u].id;
+        const lic = document.getElementById("admin-licenses"); lic.innerHTML = "";
+        shopItems.forEach(i => { const h = database[u].items.includes(i.name); lic.innerHTML += `<label style="display:flex; gap:10px; margin-bottom:10px; cursor:pointer;"><input type="checkbox" id="adm-chk-${i.id}" ${h ? 'checked' : ''} style="width:20px; height:20px; margin:0;">${i.name}</label>`; });
     }
 
     function saveUserChanges() {
-        const u = document.getElementById("admin-user-select").value;
-        if(!u) return;
-        
-        database[u].vk = parseInt(document.getElementById("admin-vk").value);
-        database[u].ar = parseInt(document.getElementById("admin-ar").value);
-        database[u].id = document.getElementById("admin-id").value;
-        
-        database[u].items = ["Паспорт"]; 
-        shopItems.forEach(i => { 
-            if (document.getElementById(`adm-chk-${i.id}`).checked) database[u].items.push(i.name); 
-        });
-        
-        addLog(`⚙️ Мэрия принудительно обновила профиль игрока ${u}.`);
-        notifyMac("База данных", `Профиль ${u} сохранен.`);
-        initAllPanels(); 
+        const u = document.getElementById("admin-user-select").value; if(!u) return;
+        database[u].vk = parseInt(document.getElementById("admin-vk").value); database[u].ar = parseInt(document.getElementById("admin-ar").value); database[u].id = document.getElementById("admin-id").value;
+        database[u].items = ["Паспорт"]; shopItems.forEach(i => { if (document.getElementById(`adm-chk-${i.id}`).checked) database[u].items.push(i.name); });
+        addLog(`⚙️ Обновлен профиль игрока ${u}.`); notifyMac("База данных", `Профиль ${u} сохранен.`); syncDB(); initAllPanels(); 
     }
 
-    // === ХАРДКОР ПРАНКИ ===
+    // ХАРДКОР ПРАНКИ
     function prank(type) {
-        const target = document.getElementById("prank-user-select").value;
-        if(!target) return notifyMac("Пранки", "Сначала выберите жертву!", "error");
-        
-        notifyMac("ХАРДКОР ПРАНК", `Эффект активирован (Локально)`);
-        
+        const t = document.getElementById("prank-user-select").value; if(!t) return notifyMac("Пранки", "Выберите жертву!", "error"); notifyMac("ХАРДКОР ПРАНК", `Активирован`);
         if(type === 'scare') {
-            // ЧИСТЫЙ CSS СКРИМЕР (Работает всегда)
-            const scare = document.createElement('div');
-            scare.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;background:black;color:red;display:flex;justify-content:center;align-items:center;font-size:130px;font-weight:900;text-align:center;font-family:serif;';
-            scare.innerHTML = 'ОБЕРНИСЬ.';
-            document.body.appendChild(scare);
-            let iv = setInterval(() => {
-                scare.style.background = scare.style.background === 'black' ? 'red' : 'black';
-                scare.style.color = scare.style.background === 'black' ? 'red' : 'black';
-            }, 30);
-            new Audio('https://www.myinstants.com/media/sounds/fnaf-scream.mp3').play();
-            document.body.classList.add("shake-hardcore");
-            setTimeout(() => { clearInterval(iv); scare.remove(); document.body.classList.remove("shake-hardcore"); }, 3000);
+            const sc = document.createElement('div'); sc.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;background:black;color:red;display:flex;justify-content:center;align-items:center;font-size:130px;font-weight:900;text-align:center;font-family:serif;'; sc.innerHTML = 'ОБЕРНИСЬ.'; document.body.appendChild(sc);
+            let iv = setInterval(() => { sc.style.background = sc.style.background === 'black' ? 'red' : 'black'; sc.style.color = sc.style.background === 'black' ? 'red' : 'black'; }, 30);
+            new Audio('https://www.myinstants.com/media/sounds/fnaf-scream.mp3').play(); document.body.classList.add("shake-hardcore"); setTimeout(() => { clearInterval(iv); sc.remove(); document.body.classList.remove("shake-hardcore"); }, 3000);
         }
-        
-        if(type === 'shake') {
-            document.body.classList.add("shake-hardcore");
-            setTimeout(() => document.body.classList.remove("shake-hardcore"), 2000);
-        }
-        
-        if(type === 'spam') {
-            let count = 0;
-            const spamer = setInterval(() => {
-                new Audio('https://www.myinstants.com/media/sounds/erro.mp3').play();
-                const err = document.createElement('div');
-                err.className = 'panel';
-                err.style.cssText = `position:fixed; z-index:99999; width: 400px; left: ${Math.random()*60}vw; top: ${Math.random()*70}vh; background:#ff0000; color:white; font-size:30px; text-align:center; padding: 30px; box-shadow: 0 0 50px black; border: 5px solid yellow; transform: rotate(${Math.random()*20 - 10}deg);`;
-                err.innerHTML = '<h2>☠️ СИСТЕМА УНИЧТОЖЕНА</h2>ВАШИ ДАННЫЕ СТЕРТЫ';
-                document.body.appendChild(err);
-                count++;
-                if(count > 40) {
-                    clearInterval(spamer);
-                    setTimeout(() => document.querySelectorAll('.panel[style*="z-index: 99999"]').forEach(e => e.remove()), 4000);
-                }
-            }, 50);
-        }
-        
-        if(type === 'delete') {
-            const delWin = document.createElement('div');
-            delWin.style.cssText = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:black; color:#0f0; font-family:monospace; font-size:18px; padding:20px; z-index:999999;";
-            document.body.appendChild(delWin);
-            
-            let lines = [
-                "root@visya-os:~# rm -rf /",
-                "Deleting system files...",
-                "Removing /bin/bash ... [OK]",
-                "Removing /boot/vmlinuz ... [OK]",
-                "Removing /etc/passwd ... [OK]",
-                "Removing /home/Maxutko201 ... [ACCESS DENIED]",
-                "Bypassing security...",
-                "FATAL KERNEL PANIC: NO SYSTEM DETECTED"
-            ];
-            
-            let i = 0;
-            const writer = setInterval(() => {
-                delWin.innerHTML += lines[i] + "<br>";
-                i++;
-                if(i >= lines.length) {
-                    clearInterval(writer);
-                    setTimeout(() => { document.getElementById("bsod").style.display = "flex"; delWin.remove(); }, 1000);
-                }
-            }, 500);
-        }
-        
-        if(type === 'bsod') {
-            document.getElementById("bsod").style.display = "flex";
-            // В BSOD придется обновлять страницу, чтобы выйти
+        if(type === 'shake') { document.body.classList.add("shake-hardcore"); setTimeout(() => document.body.classList.remove("shake-hardcore"), 2000); }
+        if(type === 'spam') { let c=0; const sp = setInterval(() => { new Audio('https://www.myinstants.com/media/sounds/erro.mp3').play(); const e = document.createElement('div'); e.className='panel'; e.style.cssText=`position:fixed;z-index:99999;width:400px;left:${Math.random()*60}vw;top:${Math.random()*70}vh;background:#ff0000;color:white;font-size:30px;text-align:center;padding:30px;box-shadow:0 0 50px black;border:5px solid yellow;transform:rotate(${Math.random()*20-10}deg);`; e.innerHTML='<h2>☠️ СИСТЕМА УНИЧТОЖЕНА</h2>ВАШИ ДАННЫЕ СТЕРТЫ'; document.body.appendChild(e); c++; if(c>40) { clearInterval(sp); setTimeout(()=>document.querySelectorAll('.panel[style*="z-index: 99999"]').forEach(el=>el.remove()), 4000); } }, 50); }
+        if(type === 'delete') { const d = document.createElement('div'); d.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:black;color:#0f0;font-family:monospace;font-size:18px;padding:20px;z-index:999999;"; document.body.appendChild(d); let l = ["root@visya-os:~# rm -rf /","Deleting system files...","Removing /bin/bash ... [OK]","Removing /boot/vmlinuz ... [OK]","Removing /etc/passwd ... [OK]","Removing /home/Maxutko201 ... [ACCESS DENIED]","Bypassing security...","FATAL KERNEL PANIC: NO SYSTEM DETECTED"]; let i=0; const w = setInterval(() => { d.innerHTML += l[i]+"<br>"; i++; if(i>=l.length) { clearInterval(w); setTimeout(()=>{document.getElementById("bsod").style.display="flex";d.remove();},1000); } }, 500); }
+        if(type === 'bsod') document.getElementById("bsod").style.display = "flex";
+    }
+
+    function hardResetDB() {
+        if(confirm("Вы уверены, что хотите ОБНУЛИТЬ ВСЮ БАЗУ? Это действие нельзя отменить!")) {
+            database = { "Maxutko201": { password: "28042010", role: "admin", id: "0001", vk: 0, ar: 0, items: ["GOD MODE"], fines: [], heydogHits: 0, serverLogs: ["[Система] База сброшена администратором."] } };
+            syncDB(); alert("БАЗА СБРОШЕНА. Выполните перезаход."); logout();
         }
     }
 
-    // ЧАСЫ
-    setInterval(() => {
-        const d = new Date();
-        document.getElementById("clock").innerText = d.getHours().toString().padStart(2, '0') + ":" + d.getMinutes().toString().padStart(2, '0');
-    }, 1000);
-
-    updateLoginAvatar();
-
+    setInterval(() => { const d = new Date(); document.getElementById("clock").innerText = d.getHours().toString().padStart(2, '0') + ":" + d.getMinutes().toString().padStart(2, '0'); }, 1000);
 </script>
 </body>
 </html>
